@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>API Health Check</title>
+  <script src="./config.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    .ok { color: #10b981; }
+    .bad { color: #ef4444; }
+    code { background: #f3f4f6; padding: .2rem .4rem; border-radius: .25rem; }
+  </style>
+</head>
+<body>
+  <h1>API Health Check</h1>
+  <p>Using API base: <code id="apiBase"></code></p>
+  <button id="checkBtn">Run Health Check</button>
+  <pre id="output"></pre>
+
+  <script>
+    const API_BASE = window.API_BASE;
+    document.getElementById('apiBase').textContent = API_BASE;
+    const out = document.getElementById('output');
+
+    async function run() {
+      out.textContent = 'Checking ' + API_BASE + '/health...';
+      try {
+        const res = await fetch(API_BASE + '/health');
+        const text = await res.text();
+        out.innerHTML = `Status: <span class="${res.ok ? 'ok' : 'bad'}">${res.status}</span>\nBody: ${text}`;
+      } catch (e) {
+        out.innerHTML = 'Error: ' + e.message;
+      }
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', run);
+    // Auto-run once
+    run();
+  </script>
+</body>
+</html>
